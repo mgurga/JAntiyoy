@@ -1,8 +1,7 @@
 
-import java.awt.*;
+import java.awt.Canvas;
+import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
-
-import javax.swing.*;
 
 public class Game extends Canvas implements Runnable {
 
@@ -15,6 +14,7 @@ public class Game extends Canvas implements Runnable {
 
 	public Game() {
 		window = new Window(WIDTH, HEIGHT, "JAntiyoy", this);
+		jagame = new JAntiyoy(WIDTH, HEIGHT, window.getFrame());
 		addMouseListener(jagame);
 		addMouseMotionListener(jagame);
 		addMouseWheelListener(jagame);
@@ -24,7 +24,6 @@ public class Game extends Canvas implements Runnable {
 		thread = new Thread(this);
 		thread.start();
 		running = true;
-		jagame = new JAntiyoy(WIDTH, HEIGHT);
 	}
 
 	public synchronized void stop() {
@@ -81,9 +80,11 @@ public class Game extends Canvas implements Runnable {
 		}
 		Graphics g = bs.getDrawGraphics();
 		
-		//g.setColor(Color.black);
-		//g.fillRect(0, 0, WIDTH, HEIGHT);
-		jagame.tick(g);
+		try {
+			jagame.tick(g);
+		}catch (NullPointerException e) {
+			e.printStackTrace();
+		}
 		
 		g.dispose();
 		bs.show();
