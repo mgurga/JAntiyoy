@@ -33,7 +33,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 	public int selectedhexx, selectedhexy;
 	public PlayerTurn pt;
 	public boolean blink = false;
-	private Image[] farms = new Image[3];
+	private Image[] building = new Image[4];
 	private Image[] soldiers = new Image[4];
 	private Image[] towers = new Image[2];
 	private Image[] menuicons = new Image[2];
@@ -64,9 +64,10 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		
 		pt = new PlayerTurn(world, worldGen);
 		
-		farms[0] = new ImageIcon("res/farms/farm0.png").getImage();
-		farms[1] = new ImageIcon("res/farms/farm1.png").getImage();
-		farms[2] = new ImageIcon("res/farms/farm2.png").getImage();
+		building[0] = new ImageIcon("res/buildings/farm0.png").getImage();
+		building[1] = new ImageIcon("res/buildings/farm1.png").getImage();
+		building[2] = new ImageIcon("res/buildings/farm2.png").getImage();
+		building[3] = new ImageIcon("res/buildings/townhall.png").getImage();
 		
 		soldiers[0] = new ImageIcon("res/soldiers/soldier0.png").getImage();
 		soldiers[1] = new ImageIcon("res/soldiers/soldier1.png").getImage();
@@ -88,7 +89,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		drawMap(g);
 		drawUI(g);
 		
-		if(frame % 200 == 0)
+		if(frame % 150 == 0)
 			blink = !blink;
 		
 		if(selecteditem.equals("end_turn")) {
@@ -99,6 +100,10 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		if(selecteditem.equals("undo")) {
 			pt.undo();
 			selecteditem = "";
+		}
+		
+		if(selecteditem.equals("")) {
+			worldGen.highlightPlayerHexs(pt.currentturn);
 		}
 		
 		frame++;
@@ -138,7 +143,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 			g2.drawImage(towers[1], 0, toolbarSize*6, toolbarSize, toolbarSize, null);
 			
 			// farm
-			g2.drawImage(farms[0], 0, toolbarSize*7, toolbarSize, toolbarSize, null);
+			g2.drawImage(building[0], 0, toolbarSize*7, toolbarSize, toolbarSize, null);
 			
 			// menu icons
 			g2.drawImage(menuicons[1], 0, HEIGHT - toolbarSize*2, toolbarSize, toolbarSize, null);
@@ -223,7 +228,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		if(itemName == "tower0") return towers[0];
 		if(itemName == "tower1") return towers[1];
 		
-		if(itemName == "farm") return farms[0];
+		if(itemName == "farm") return building[0];
 		
 		return null;
 	}

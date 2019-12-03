@@ -10,6 +10,7 @@ public class World {
 	public int finishedCleaning = 0;
 	Random rand = new Random();
 	public PlayerTurn pt;
+	public int predefinedstatuses = 2;
 	
 	public World(int size) {
 		if(size == 0) {
@@ -105,6 +106,36 @@ public class World {
 		return newWorld;
 	}
 	
+	public void highlightPlayerHexs(int playerNum) {
+		for(int i = 0; i < world.length; i++) {
+			for(int j = 0; j < world[0].length; j++) {
+				if(world[i][j].getStatus() == playerNum + predefinedstatuses) {
+					world[i][j].isHighlighted = true;
+				}
+			}
+		}
+	}
+	
+	public void unhighlightAllPlayerHexs(int playerNum) {
+		for(int i = 0; i < world.length; i++) {
+			for(int j = 0; j < world[0].length; j++) {
+				if(world[i][j].getStatus() == playerNum + predefinedstatuses) {
+					world[i][j].isHighlighted = false;
+				}
+			}
+		}
+	}
+	
+	public void highlightValidHexsForItem() {
+		
+	}
+	
+	public void unhighlightAll() {
+		for(int i = 0; i < pt.totalplayers; i++) {
+			unhighlightAllPlayerHexs(i);
+		}			
+	}
+	
 	public void cleanupWorld(int x, int y, int iter) {
 		finishedCleaning++;
 		if(iter < 100 && x >= 1 && x < world[0].length - 1 && y >= 2 && y < world.length - 2) {
@@ -153,8 +184,11 @@ public class World {
 	}
 	
 	public void makePlayerCamp(int x, int y, int size, int player) {
+		world[y][x].setOccupation("townhall");
+	}
+	
+	public void makePlayerCampRecurs(int x, int y, int size, int player) {
 		if(size > 0) {
-			
 			Hex[] adjacent = getAdjHexs(new Hex(0, x, y));
 			
 			world[y][x].setStatus(player);
@@ -292,7 +326,7 @@ class Hex {
 	// townhall = team center
 	
 	private int status;
-	public String occupiedBy;
+	private String occupiedBy;
 	public boolean cleaned = false;
 	private Hex cleanedBy;
 	public int x, y;
