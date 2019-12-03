@@ -167,6 +167,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 				double xgap = 30 * zoomoffset;
 				double ygap = 8.5 * zoomoffset;
 				double radius = 10 * zoomoffset;
+				double imgsize = 20* zoomoffset;
 				
 				if(i % 2 == 0) {
 					hexoffset = xgap / 2;
@@ -183,12 +184,11 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 					g.setColor(world[i][j].getColor());
 					g.fillPolygon(hex);
 					g.setColor(Color.black);
-					if(world[i][j].isHighlighted && blink) {
-						g2.setStroke(new BasicStroke(3));
-					} else {
-						g2.setStroke(new BasicStroke(1));
-					}
+					g2.setStroke(new BasicStroke(1));
+					
 					g2.drawPolygon(hex);
+					g2.drawImage(itemNameToImage(world[i][j].getOccupation()), (int) (drawx-radius),(int) (drawy-radius),(int) imgsize,(int) imgsize, null);
+					//System.out.println("occupied by: " + world[i][j].getOccupation());
 					if(debug) {
 						//g.drawString(world[i][j].getCleaned() + "", (int)drawx, (int)drawy);
 						g.drawString("x: " + j + "", (int)drawx, (int)drawy+10);
@@ -203,6 +203,36 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 				hexPoints[i][j] = new Point2D.Double(j*xgap + hexoffset, i*ygap);
 				if(debug)
 					g.fillOval((int)hexPoints[i][j].getX() + xoffset, (int)hexPoints[i][j].getY() + yoffset, 5, 5);
+			}
+		}
+		for(int i = 0; i < world.length; i++) {
+			for(int j = 0; j < world[0].length; j++) {
+				double hexoffset = 0 * zoomoffset;
+				double xgap = 30 * zoomoffset;
+				double ygap = 8.5 * zoomoffset;
+				double radius = 10 * zoomoffset;
+				if(i % 2 == 0) {
+					hexoffset = xgap / 2;
+					//g.setColor(Color.green);
+				} else {
+					hexoffset = 0;
+					//g.setColor(Color.red);
+				}
+				if(world[i][j].getStatus() != 0 || debug) {
+					double drawx = j*xgap + hexoffset + xoffset;
+					double drawy = i*ygap + yoffset;
+					Polygon hex = world[i][j].getPolygon(drawx, drawy, radius);
+					g.setColor(world[i][j].getColor());
+					//g.fillPolygon(hex);
+					g.setColor(Color.black);
+					if(world[i][j].isHighlighted && blink) {
+						g2.setStroke(new BasicStroke(3 + (zoomoffset)));
+						g2.drawPolygon(hex);
+					} else {
+						g2.setStroke(new BasicStroke(1));
+					}
+					//g2.drawPolygon(hex);
+				}
 			}
 		}
 	}
@@ -229,6 +259,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		if(itemName == "tower1") return towers[1];
 		
 		if(itemName == "farm") return building[0];
+		if(itemName == "townhall") return building[3];
 		
 		return null;
 	}
@@ -386,6 +417,8 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		// TODO Auto-generated method stub
 		zoomoffset -= e.getUnitsToScroll() / 3;
+		xoffset += e.getUnitsToScroll()*50;
+		yoffset += e.getUnitsToScroll()*50;
 		if(zoomoffset > 10) {
 			zoomoffset = 10;
 		}

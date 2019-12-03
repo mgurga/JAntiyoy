@@ -184,6 +184,7 @@ public class World {
 	}
 	
 	public void makePlayerCamp(int x, int y, int size, int player) {
+		makePlayerCampRecurs(x, y, size, player);
 		world[y][x].setOccupation("townhall");
 	}
 	
@@ -192,27 +193,38 @@ public class World {
 			Hex[] adjacent = getAdjHexs(new Hex(0, x, y));
 			
 			world[y][x].setStatus(player);
+			world[y][x].setOccupation("");
 			
 			for(int i = 0; i < 2; i++) {
-				int randHex = rand.nextInt(6);
-				if(randHex == 1 && adjacent[0].getStatus() != 0)
-					makePlayerCamp(adjacent[0].x, adjacent[0].y, size-1, player);
-				
-				if(randHex == 2 && adjacent[1].getStatus() != 0)
-					makePlayerCamp(adjacent[1].x, adjacent[1].y, size-1, player);
-				if(randHex == 3 && adjacent[2].getStatus() != 0)
-					makePlayerCamp(adjacent[2].x, adjacent[2].y, size-1, player);
-				if(randHex == 4 && adjacent[3].getStatus() != 0)
-					makePlayerCamp(adjacent[3].x, adjacent[3].y, size-1, player);
-				if(randHex == 5 && adjacent[4].getStatus() != 0)
-					makePlayerCamp(adjacent[4].x, adjacent[4].y, size-1, player);
-				if(randHex == 6 && adjacent[5].getStatus() != 0)
-					makePlayerCamp(adjacent[5].x, adjacent[5].y, size-1, player);
+				int randHex = rand.nextInt(5);
+				if(randHex == 0 && adjacent[0].getStatus() != 0)
+					makePlayerCampRecurs(adjacent[0].x, adjacent[0].y, size-1, player);
+				if(randHex == 1 && adjacent[1].getStatus() != 0)
+					makePlayerCampRecurs(adjacent[1].x, adjacent[1].y, size-1, player);
+				if(randHex == 2 && adjacent[2].getStatus() != 0)
+					makePlayerCampRecurs(adjacent[2].x, adjacent[2].y, size-1, player);
+				if(randHex == 3 && adjacent[3].getStatus() != 0)
+					makePlayerCampRecurs(adjacent[3].x, adjacent[3].y, size-1, player);
+				if(randHex == 4 && adjacent[4].getStatus() != 0)
+					makePlayerCampRecurs(adjacent[4].x, adjacent[4].y, size-1, player);
+				if(randHex == 5 && adjacent[5].getStatus() != 0)
+					makePlayerCampRecurs(adjacent[5].x, adjacent[5].y, size-1, player);
 			}
 		}
-		
 	}
 	
+	public Hex[] validWorkerPlaces(int player, int workerLevel) {
+		ArrayList<Hex> alout = new ArrayList<Hex>();
+		
+		
+
+		Hex[] out = new Hex[alout.size()];
+		for(int i = 0; i < out.length; i++) {
+			out[i] = alout.get(i);
+		}
+		return out;
+	}
+			
 	public Hex[] getSpecificHexs(int targetStatus) {
 		int totalHexs = 0;
 		ArrayList<Hex> alout = new ArrayList<Hex>();
@@ -326,7 +338,7 @@ class Hex {
 	// townhall = team center
 	
 	private int status;
-	private String occupiedBy;
+	private String occupiedBy = "";
 	public boolean cleaned = false;
 	private Hex cleanedBy;
 	public int x, y;
