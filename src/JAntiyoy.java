@@ -23,6 +23,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 	public int WIDTH, HEIGHT;
 	public int xoffset, yoffset, zoomoffset = 1;
 	public int frame = 0;
+	public int seconds = 0;
 	public Graphics graphics;
 	public World worldGen;
 	public Hex[][] world;
@@ -89,8 +90,9 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		drawMap(g);
 		drawUI(g);
 		
-		if(frame % 150 == 0)
-			blink = !blink;
+		worldGen.unhighlightAll();
+		
+		//System.out.println(blink);		
 		
 		if(selecteditem.equals("end_turn")) {
 			pt.endTurn();
@@ -103,6 +105,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		}
 		
 		if(selecteditem.equals("")) {
+			worldGen.unhighlightAll();
 			worldGen.highlightPlayerHexs(pt.currentturn);
 		}
 		
@@ -111,7 +114,13 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		if(selecteditem.equals("soldier2")) worldGen.highlightValidSoldierHexs(pt.currentturn, 2);
 		if(selecteditem.equals("soldier3")) worldGen.highlightValidSoldierHexs(pt.currentturn, 3);
 		
+		worldGen.highlightSpecificHexs(pt.currentturn);
+		
 		frame++;
+	}
+	
+	public void fourthSecondPassed() {
+		blink = !blink;
 	}
 	
 	public void drawUI(Graphics g) {
@@ -289,9 +298,9 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 					}
 				}
 				
-				Hex[] adjs = worldGen.getAdjHexs(new Hex(3, hexy, hexx));
+				Hex[] adjs = worldGen.getAdjHexs(new Hex(1, hexy, hexx));
 				for(int i = 0; i < adjs.length; i++) {
-					//adjs[i].isHighlighted = true;
+					adjs[i].isHighlighted = true;
 				}
 			} else {
 				// clicked on menu

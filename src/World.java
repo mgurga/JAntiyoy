@@ -1,7 +1,11 @@
 import java.awt.Color;
 import java.awt.Polygon;
 import java.util.ArrayList;
-import java.util.Random; 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set; 
 
 public class World {
 	public Hex[][] world;
@@ -131,9 +135,11 @@ public class World {
 	}
 	
 	public void unhighlightAll() {
-		for(int i = 0; i < pt.totalplayers; i++) {
-			unhighlightAllPlayerHexs(i);
-		}			
+		for(int i = 0; i < world.length; i++) {
+			for(int j = 0; j < world[0].length; j++) {
+				world[i][j].isHighlighted = false;
+			}
+		}
 	}
 	
 	public void cleanupWorld(int x, int y, int iter) {
@@ -213,20 +219,30 @@ public class World {
 		}
 	}
 	
+	public void highlightSpecificHexs(int target) {
+		Hex[] toHighlight = getSpecificHexs(target);
+		for(Hex hex : toHighlight) {
+			hex.isHighlighted = true;
+		}
+	}
+	
 	public Hex[] validSoldierHexs(int player, int workerlevel) {
 		ArrayList<Hex> alout = new ArrayList<Hex>();
-		
-		Hex[] teamHexs = getSpecificHexs(player);
-		System.out.println(teamHexs.length);
-		for(int i = 0; i < teamHexs.length-1; i++) {
+		Hex[] teamHexs = getSpecificHexs(player+2);
+		//System.out.println("team hexs: " + teamHexs.length);
+		for(int i = 0; i < teamHexs.length; i++) {
 			alout.add(teamHexs[i]);
 			
-			Hex[] adjs = getAdjHexs(teamHexs[i]);
+			Hex[] adjs = getValidAdjHexs(teamHexs[i]);
 			for(int j = 0; j < adjs.length-1; j++) {
 				alout.add(adjs[j]);
 			}
 		}
-
+		
+		Set<Hex> set = new HashSet<>(alout);
+		alout.clear();
+		alout.addAll(set);
+		
 		Hex[] out = new Hex[alout.size()];
 		for(int i = 0; i < out.length-1; i++) {
 			out[i] = alout.get(i);
@@ -236,9 +252,10 @@ public class World {
 	
 	public void highlightValidSoldierHexs(int player, int workerlevel) {
 		Hex[] tohighlight = validSoldierHexs(player, workerlevel);
-		System.out.println(tohighlight.length);
+		//System.out.println(tohighlight.length);
 		for(int i = 0; i < tohighlight.length-1; i++) {
-			tohighlight[i].isHighlighted = true;
+			if(tohighlight[i] != null)
+				tohighlight[i].isHighlighted = true;
 		}
 	}
 			
@@ -270,8 +287,8 @@ public class World {
 		int y = inputHex.y;
 		Hex[] out = new Hex[6];
 		
-		System.out.println("x: " + x);
-		System.out.println("y: " + y);
+		//System.out.println("x: " + x);
+		//System.out.println("y: " + y);
 		
 		if(y >= 2 && y <= world.length-3) {
 			if(!(world[y-2][x] == null))
@@ -281,7 +298,7 @@ public class World {
 				out[4] = world[y+2][x]; // down mid
 		}
 		
-		if(y >= 1 && x >= 1 && y < world.length-1 && x < world[0].length-1 ) {
+		if(y >= 1 && x >= 1 && y < world.length-2 && x < world[0].length-2) {
 			if(y % 2 == 0) {
 				if(!(world[y+1][x] == null))
 					out[0] = world[y+1][x]; // down left
@@ -301,6 +318,23 @@ public class World {
 				if(!(world[y-1][x] == null))
 					out[5] = world[y-1][x]; // up right
 			}
+		}
+		
+		return out;
+	}
+	
+	public Hex[] getValidAdjHexs(Hex inputHex) {
+		List<Hex> alin = Arrays.asList(getAdjHexs(inputHex));
+		ArrayList<Hex> alout = new ArrayList<Hex>();
+		
+		for(int i = 0; i < alin.size(); i++) {
+			if(alin.get(i).getStatus() != 0) 
+				alout.add(alin.get(i));
+		}
+		
+		Hex[] out = new Hex[alout.size()];
+		for(int i = 0; i < alout.size(); i++) {
+			out[i] = alout.get(i);
 		}
 		
 		return out;
