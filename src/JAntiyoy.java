@@ -106,6 +106,11 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 			worldGen.highlightPlayerHexs(pt.currentturn);
 		}
 		
+		if(selecteditem.equals("soldier0")) worldGen.highlightValidSoldierHexs(pt.currentturn, 0);
+		if(selecteditem.equals("soldier1")) worldGen.highlightValidSoldierHexs(pt.currentturn, 1);
+		if(selecteditem.equals("soldier2")) worldGen.highlightValidSoldierHexs(pt.currentturn, 2);
+		if(selecteditem.equals("soldier3")) worldGen.highlightValidSoldierHexs(pt.currentturn, 3);
+		
 		frame++;
 	}
 	
