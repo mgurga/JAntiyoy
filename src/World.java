@@ -213,16 +213,33 @@ public class World {
 		}
 	}
 	
-	public Hex[] validWorkerPlaces(int player, int workerLevel) {
+	public Hex[] validSoldierHexs(int player, int workerlevel) {
 		ArrayList<Hex> alout = new ArrayList<Hex>();
 		
-		
+		Hex[] teamHexs = getSpecificHexs(player);
+		System.out.println(teamHexs.length);
+		for(int i = 0; i < teamHexs.length-1; i++) {
+			alout.add(teamHexs[i]);
+			
+			Hex[] adjs = getAdjHexs(teamHexs[i]);
+			for(int j = 0; j < adjs.length-1; j++) {
+				alout.add(adjs[j]);
+			}
+		}
 
 		Hex[] out = new Hex[alout.size()];
-		for(int i = 0; i < out.length; i++) {
+		for(int i = 0; i < out.length-1; i++) {
 			out[i] = alout.get(i);
 		}
 		return out;
+	}
+	
+	public void highlightValidSoldierHexs(int player, int workerlevel) {
+		Hex[] tohighlight = validSoldierHexs(player, workerlevel);
+		System.out.println(tohighlight.length);
+		for(int i = 0; i < tohighlight.length-1; i++) {
+			tohighlight[i].isHighlighted = true;
+		}
 	}
 			
 	public Hex[] getSpecificHexs(int targetStatus) {
@@ -253,22 +270,37 @@ public class World {
 		int y = inputHex.y;
 		Hex[] out = new Hex[6];
 		
-		try {
-			out[2] = world[y-2][x]; // up mid
-			out[4] = world[y+2][x]; // down mid
-			if(y % 2 == 0) {
-				out[0] = world[y+1][x]; // down left
-				out[3] = world[y+1][x+1]; // down right
-				out[1] = world[y-1][x]; // up left
-				out[5] = world[y-1][x+1]; // up right
-			} else if(y % 2 == 1) {
-				out[0] = world[y+1][x-1]; // down left
-				out[3] = world[y+1][x]; // down right
-				out[1] = world[y-1][x-1]; // up left
-				out[5] = world[y-1][x]; // up right
-			}
-		}catch (Exception e) {
+		System.out.println("x: " + x);
+		System.out.println("y: " + y);
+		
+		if(y >= 2 && y <= world.length-3) {
+			if(!(world[y-2][x] == null))
+				out[2] = world[y-2][x]; // up mid			
 			
+			if(!(world[y+2][x] == null))
+				out[4] = world[y+2][x]; // down mid
+		}
+		
+		if(y >= 1 && x >= 1 && y < world.length-1 && x < world[0].length-1 ) {
+			if(y % 2 == 0) {
+				if(!(world[y+1][x] == null))
+					out[0] = world[y+1][x]; // down left
+				if(!(world[y+1][x+1] == null))
+					out[3] = world[y+1][x+1]; // down right
+				if(!(world[y-1][x] == null))
+					out[1] = world[y-1][x]; // up left
+				if(!(world[y-1][x+1] == null))
+					out[5] = world[y-1][x+1]; // up right
+			} else if(y % 2 == 1) {
+				if(!(world[y+1][x-1] == null))
+					out[0] = world[y+1][x-1]; // down left
+				if(!(world[y+1][x] == null))
+					out[3] = world[y+1][x]; // down right
+				if(!(world[y-1][x-1] == null))
+					out[1] = world[y-1][x-1]; // up left
+				if(!(world[y-1][x] == null))
+					out[5] = world[y-1][x]; // up right
+			}
 		}
 		
 		return out;
