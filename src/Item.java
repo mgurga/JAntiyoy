@@ -36,22 +36,17 @@ public class Item
 	public int getPrice()
 	{
 		String itemName = this.toString();
+		System.out.println(itemName);
+		
+		if(itemtype.equals("soldier")) {
+			return PlayerTurn.itemPrice[itemlevel];
+		}
+		
+		if(itemtype.equals("tower")) {
+			return PlayerTurn.itemPrice[itemlevel+3];
+		}
 
-		if (itemName == "soldier0")
-			return PlayerTurn.itemPrice[0];
-		if (itemName == "soldier1")
-			return PlayerTurn.itemPrice[1];
-		if (itemName == "soldier2")
-			return PlayerTurn.itemPrice[2];
-		if (itemName == "soldier3")
-			return PlayerTurn.itemPrice[3];
-
-		if (itemName == "tower0")
-			return PlayerTurn.itemPrice[4];
-		if (itemName == "tower1")
-			return PlayerTurn.itemPrice[5];
-
-		if (itemName == "farm")
+		if(itemtype.equals("farm"))
 			return PlayerTurn.itemPrice[6];
 
 		return -1;
@@ -59,25 +54,17 @@ public class Item
 
 	public Image getImage()
 	{
-		String itemName = this.toString();
 
-		if (itemName == "soldier0")
-			return JAntiyoy.soldiers[0];
-		if (itemName == "soldier1")
-			return JAntiyoy.soldiers[1];
-		if (itemName == "soldier2")
-			return JAntiyoy.soldiers[2];
-		if (itemName == "soldier3")
-			return JAntiyoy.soldiers[3];
+		if (itemtype.equals("soldier"))
+			return JAntiyoy.soldiers[itemlevel];
 
-		if (itemName == "tower0")
-			return JAntiyoy.towers[0];
-		if (itemName == "tower1")
-			return JAntiyoy.towers[1];
+		if (itemtype.equals("tower"))
+			return JAntiyoy.towers[itemlevel];
 
-		if (itemName.contains("farm"))
+		if (itemtype.equals("farm"))
 			return JAntiyoy.building[0];
-		if (itemName.contains("townhall"))
+		
+		if (itemtype.equals("townhall"))
 			return JAntiyoy.building[3];
 
 		return null;

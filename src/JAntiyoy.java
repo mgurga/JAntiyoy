@@ -96,7 +96,6 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		drawUI(g);
 
 		// worldGen.unhighlightAll();
-
 		// System.out.println(blink);
 
 		if (selecteditem.getItemtype().equals("end_turn"))
@@ -117,13 +116,13 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 			worldGen.highlightPlayerHexs(pt.currentturn);
 		}
 
-		if (selecteditem.getItemtype().equals("soldier0"))
+		if (selecteditem.toString().equals("soldier0"))
 			worldGen.highlightValidSoldierHexs(pt.currentturn, 0);
-		if (selecteditem.getItemtype().equals("soldier1"))
+		if (selecteditem.toString().equals("soldier1"))
 			worldGen.highlightValidSoldierHexs(pt.currentturn, 1);
-		if (selecteditem.getItemtype().equals("soldier2"))
+		if (selecteditem.toString().equals("soldier2"))
 			worldGen.highlightValidSoldierHexs(pt.currentturn, 2);
-		if (selecteditem.getItemtype().equals("soldier3"))
+		if (selecteditem.toString().equals("soldier3"))
 			worldGen.highlightValidSoldierHexs(pt.currentturn, 3);
 
 		worldGen.highlightSpecificHexs(pt.currentturn + worldGen.predefinedstatuses);
@@ -484,7 +483,6 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
-		// TODO Auto-generated method stub
 		zoomoffset -= e.getUnitsToScroll() / 3;
 		xoffset += e.getUnitsToScroll() * 50;
 		yoffset += e.getUnitsToScroll() * 50;
