@@ -113,6 +113,7 @@ public class World {
 	public void highlightPlayerHexs(int playerNum) {
 		for(int i = 0; i < world.length; i++) {
 			for(int j = 0; j < world[0].length; j++) {
+				//System.out.println(world[i][j].getStatus());
 				if(world[i][j].getStatus() == playerNum + predefinedstatuses) {
 					world[i][j].isHighlighted = true;
 				}

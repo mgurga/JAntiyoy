@@ -90,7 +90,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		drawMap(g);
 		drawUI(g);
 		
-		worldGen.unhighlightAll();
+		//worldGen.unhighlightAll();
 		
 		//System.out.println(blink);		
 		
