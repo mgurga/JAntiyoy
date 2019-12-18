@@ -123,7 +123,8 @@ class Hex implements Comparable<Hex>
 	@Override
 	public int compareTo(Hex o)
 	{
-		// compares with other hex to see if they are owned by different people
+		// compares with other hex to see if 
+		// they are owned by different people
 		if (status != o.status)
 		{
 			return 1;

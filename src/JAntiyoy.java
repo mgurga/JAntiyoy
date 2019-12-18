@@ -228,6 +228,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 				{
 					double drawx = j * xgap + hexoffset + xoffset;
 					double drawy = i * ygap + yoffset;
+					Font oldFont = g2.getFont();
 					Polygon hex = world[i][j].getPolygon(drawx, drawy, radius); // gets hexagon polygon from Hex.java
 					g.setColor(world[i][j].getColor()); // gets color from hexagon
 					g.fillPolygon(hex); // draws hex
@@ -243,9 +244,11 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 					// System.out.println("occupied by: " + world[i][j].getOccupation());
 					if (debug)
 					{
+						g2.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
 						// g.drawString(world[i][j].getCleaned() + "", (int)drawx, (int)drawy);
-						g.drawString("x: " + j + "", (int) drawx, (int) drawy + 10);
-						g.drawString("y: " + i + "", (int) drawx, (int) drawy + 20);
+						g.drawString("x: " + j + "", (int) drawx-20, (int) drawy + 10);
+						g.drawString("y: " + i + "", (int) drawx-20, (int) drawy + 27);
+						g2.setFont(oldFont);
 					}
 				}
 				hexPoints[i][j] = new Point2D.Double(j * xgap + hexoffset, i * ygap);
