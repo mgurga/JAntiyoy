@@ -19,29 +19,28 @@ import java.awt.geom.Point2D;
 
 public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelListener
 {
-
 	public boolean debug = false;
 	public int WIDTH, HEIGHT;
-	public int xoffset, yoffset, zoomoffset = 1;
-	public int frame = 0;
+	public int xoffset, yoffset, zoomoffset = 1; // used to manipulate map
+	public int frame = 0; // increments everytime draw loop fires
 	public int seconds = 0;
-	public Graphics graphics;
-	public World worldGen;
-	public Hex[][] world;
-	public Point2D[][] hexPoints;
+	public Graphics graphics; // used to draw to screen
+	public World worldGen; // used to generate world
+	public Hex[][] world; // world of hexs
+	public Point2D[][] hexPoints; // click points, detected which hex was clicked
 	public JFrame jframe;
 	public int mousepressx, mousepressy;
 	public int mousedragx, mousedragy;
 	public int selectedhexx, selectedhexy;
-	public PlayerTurn pt;
-	public boolean blink = false;
-	public static Image[] building = new Image[4];
-	public static Image[] soldiers = new Image[4];
-	public static Image[] towers = new Image[2];
-	public static Image[] menuicons = new Image[2];
-	private String toolbarSide = "left";
-	private int toolbarSize = 50;
-	public Item selecteditem = new Item("");
+	public PlayerTurn pt; // used to show end turn
+	public boolean blink = false; // tells if hexs are highlighted
+	public static Image[] building = new Image[4]; // farms and townhall
+	public static Image[] soldiers = new Image[4]; // soldiers
+	public static Image[] towers = new Image[2]; // towers
+	public static Image[] menuicons = new Image[2]; // undo and endturn
+	private String toolbarSide = "left"; // soon to be options
+	private int toolbarSize = 50; // ability to resize sidebars
+	public Item selecteditem = new Item(""); // currently selected item
 
 	public JAntiyoy(int w, int h, JFrame frame)
 	{
@@ -50,6 +49,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		this.HEIGHT = h;
 		this.jframe = frame;
 
+		// jframe code listens for resize then calls resize() method
 		jframe.addComponentListener(new ComponentAdapter()
 		{
 			public void componentResized(ComponentEvent comp)
@@ -58,17 +58,17 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 			}
 		});
 
+		// generates world
 		worldGen = new World(1);
 		worldGen.generateWorld();
 		world = worldGen.getWorld();
 		worldGen.makePlayerCamp(worldGen.getRandomHex(1).x, worldGen.getRandomHex(1).y, 3, 2); // red
 		worldGen.makePlayerCamp(worldGen.getRandomHex(1).x, worldGen.getRandomHex(1).y, 3, 3); // blue
-		// world = worldGen.cleanup();
-		// System.out.println("done cleaning");
 		hexPoints = new Point2D[world.length][world[0].length];
 
 		pt = new PlayerTurn(world, worldGen);
 
+		// loads all the images
 		building[0] = new ImageIcon("res/buildings/farm0.png").getImage();
 		building[1] = new ImageIcon("res/buildings/farm1.png").getImage();
 		building[2] = new ImageIcon("res/buildings/farm2.png").getImage();
@@ -87,27 +87,31 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 
 	}
 
+	// draw loop
 	public void tick(Graphics g)
 	{
-		// loop
+
 		graphics = g;
 		drawBackground(g, Color.blue);
 		drawMap(g);
 		drawUI(g);
 
-		// worldGen.unhighlightAll();
-		// System.out.println(blink);
-
+		// checks selecteditem if anything was used
 		if (selecteditem.getItemtype().equals("end_turn"))
 		{
-			pt.endTurn();
-			selecteditem = new Item("");
+			pt.endTurn(worldGen);
+			selecteditem = new Item();
 		}
 
 		if (selecteditem.getItemtype().equals("undo"))
 		{
 			pt.undo();
-			selecteditem = new Item("");
+			selecteditem = new Item();
+		}
+
+		if (selecteditem.getPrice() > pt.getCurrentPlayerMoney())
+		{
+			selecteditem = new Item();
 		}
 
 		if (selecteditem.getItemtype().equals(""))
@@ -125,6 +129,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		if (selecteditem.toString().equals("soldier3"))
 			worldGen.highlightValidSoldierHexs(pt.currentturn, 3);
 
+		// highlights player team hexs
 		worldGen.highlightSpecificHexs(pt.currentturn + worldGen.predefinedstatuses);
 
 		frame++;
@@ -201,23 +206,25 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 				double radius = 10 * zoomoffset;
 				double imgsize = 20 * zoomoffset;
 
+				// adds slight space on odd rows for hexagon effect
 				if (i % 2 == 0)
 				{
 					hexoffset = xgap / 2;
-					// g.setColor(Color.green);
-				} else
+				}
+				else
 				{
 					hexoffset = 0;
-					// g.setColor(Color.red);
 				}
 
 				if (world[i][j].getStatus() != 0 || debug)
 				{
 					double drawx = j * xgap + hexoffset + xoffset;
 					double drawy = i * ygap + yoffset;
-					Polygon hex = world[i][j].getPolygon(drawx, drawy, radius);
-					g.setColor(world[i][j].getColor());
-					g.fillPolygon(hex);
+					Polygon hex = world[i][j].getPolygon(drawx, drawy, radius); // gets hexagon polygon from Hex.java
+					g.setColor(world[i][j].getColor()); // gets color from hexagon
+					g.fillPolygon(hex); // draws hex
+
+					// startes drawing text
 					g.setColor(Color.black);
 					g2.setStroke(new BasicStroke(1));
 
@@ -231,15 +238,6 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 						// g.drawString(world[i][j].getCleaned() + "", (int)drawx, (int)drawy);
 						g.drawString("x: " + j + "", (int) drawx, (int) drawy + 10);
 						g.drawString("y: " + i + "", (int) drawx, (int) drawy + 20);
-						try
-						{
-							// g.drawLine((int)drawx,(int) drawy,(int) (world[i][j].getCleanedBy().x*xgap +
-							// hexoffset + xoffset),(int) (world[i][j].getCleanedBy().y*ygap + yoffset -
-							// 10));
-						} catch (Exception e)
-						{
-							// TODO: handle exception
-						}
 					}
 				}
 				hexPoints[i][j] = new Point2D.Double(j * xgap + hexoffset, i * ygap);
@@ -247,6 +245,8 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 					g.fillOval((int) hexPoints[i][j].getX() + xoffset, (int) hexPoints[i][j].getY() + yoffset, 5, 5);
 			}
 		}
+
+		// whole thing ran again to highlight highlighted hexs based on world variable
 		for (int i = 0; i < world.length; i++)
 		{
 			for (int j = 0; j < world[0].length; j++)
@@ -259,7 +259,8 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 				{
 					hexoffset = xgap / 2;
 					// g.setColor(Color.green);
-				} else
+				}
+				else
 				{
 					hexoffset = 0;
 					// g.setColor(Color.red);
@@ -276,7 +277,8 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 					{
 						g2.setStroke(new BasicStroke(3 + (zoomoffset)));
 						g2.drawPolygon(hex);
-					} else
+					}
+					else
 					{
 						g2.setStroke(new BasicStroke(1));
 					}
@@ -303,7 +305,14 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
-		// System.out.println("mouse clicked");
+
+		if (e.getButton() == 3)
+		{
+			// clears selected item if right mouse clicked
+			System.out.println("clearing selecteditem, clicked mousebutton: " + e.getButton());
+			selecteditem = new Item();
+		}
+
 		if (toolbarSide.equals("left"))
 		{
 			if (e.getX() > toolbarSize)
@@ -327,7 +336,10 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 
 				if (!selecteditem.getItemtype().equals(""))
 				{
-					worldGen.placeItem(world[hexx][hexy], selecteditem, pt.currentturn);
+					if (worldGen.placeItem(world[hexx][hexy], selecteditem, pt.currentturn))
+					{
+						pt.setCurrentPlayerMoney(pt.getCurrentPlayerMoney() - selecteditem.getPrice());
+					}
 				}
 
 				selecteditem = new Item("");
@@ -337,7 +349,8 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 //					adjs[i].isHighlighted = true;
 //				}
 
-			} else
+			}
+			else
 			{
 				// clicked on menu
 
@@ -373,7 +386,6 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 
 					selecteditem = new Item("soldier", 3);
 				}
-
 				if (e.getY() < toolbarSize * 6 && e.getY() > toolbarSize * 5)
 				{
 					// fourth button - tower0
@@ -396,7 +408,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 					if (debug)
 						System.out.println("clicked farm");
 
-					selecteditem = new Item("tower", 0);
+					selecteditem = new Item("farm", 0);
 				}
 
 				if (e.getY() < HEIGHT - toolbarSize * 2 && e.getY() > HEIGHT - toolbarSize * 3)
@@ -422,12 +434,8 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 	@Override
 	public void mousePressed(MouseEvent e)
 	{
-		// TODO Auto-generated method stub
-		// System.out.println("Mouse Pressed");
-		// if(e.getX() > toolbarSize && toolbarSide.equals("left")) {
 		mousedragx = e.getX();
 		mousedragy = e.getY();
-		// }
 	}
 
 	@Override
@@ -454,10 +462,6 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 	@Override
 	public void mouseDragged(MouseEvent e)
 	{
-		// System.out.println("mouse dragged " + e.getX() + ", " + e.getY());
-
-		// System.out.println("xdiff: " + (e.getX() - mousedragx));
-		// System.out.println("ydiff: " + (e.getY() - mousedragy));
 
 		if (e.getX() > toolbarSize && toolbarSide.equals("left"))
 		{
@@ -470,7 +474,6 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 			mousedragx = e.getX();
 			mousedragy = e.getY();
 		}
-		// System.out.println("idle: " + e.getX());
 
 	}
 
@@ -483,6 +486,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
+		// zoom based on mouse wheel
 		zoomoffset -= e.getUnitsToScroll() / 3;
 		xoffset += e.getUnitsToScroll() * 50;
 		yoffset += e.getUnitsToScroll() * 50;

@@ -31,9 +31,10 @@ public class PlayerTurn
 		this.worldGen = worldGen;
 	}
 
-	public void endTurn()
+	public void endTurn(World worldGen)
 	{
 		System.out.println("ended turn for player " + currentturn + " going to " + (currentturn + 1));
+		setCurrentPlayerMoney(getCurrentPlayerMoney() + getCurrentPlayerEarnings());
 		currentturn++;
 		if (currentturn == totalplayers)
 		{
@@ -76,5 +77,9 @@ public class PlayerTurn
 	public int getCurrentPlayerMoney()
 	{
 		return teamMoney[currentturn];
+	}
+	
+	public void setCurrentPlayerMoney(int newMoney) {
+		teamMoney[currentturn] = newMoney;
 	}
 }

@@ -68,9 +68,9 @@ public class Game extends Canvas implements Runnable
 				render();
 			frames++;
 
-			if (System.currentTimeMillis() - timer > 250)
+			if (System.currentTimeMillis() - timer > 100)
 			{
-				timer += 1000;
+				timer += 500;
 				jagame.seconds++;
 				window.getFrame().setTitle("JAntiyoy FPS: " + frames);
 				// System.out.println("FPS: " + frames);

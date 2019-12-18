@@ -3,6 +3,7 @@ import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -325,25 +326,36 @@ public class World
 
 	public Hex[] validSoldierHexs(int player, int workerlevel)
 	{
+		// gets all player hexs then gets all adjacent hexs to the player hexs
+		// adds all to an arraylist then converets it to Hex[]
 		ArrayList<Hex> alout = new ArrayList<Hex>();
 		Hex[] teamHexs = getSpecificHexs(player + predefinedstatuses);
-		// System.out.println("team hexs: " + teamHexs.length);
+		int iterlength = 0;
 		for (int i = 0; i < teamHexs.length; i++)
 		{
-			alout.add(teamHexs[i]);
-
+			if(teamHexs[i].getStatus() != 0 && teamHexs[i] != null) {
+				alout.add(teamHexs[i]);
+			}
+			
 			Hex[] adjs = getAdjHexs(teamHexs[i]);
+			
 			for (int j = 0; j < adjs.length; j++)
 			{
-				alout.add(adjs[j]);
+				if(adjs[j].getStatus() != 0 && adjs[j] != null) {
+					alout.add(adjs[j]);
+				}
 			}
 		}
-
+		
+		// converting to Hex[]
+		
 		Hex[] out = new Hex[alout.size()];
-		for (int i = 0; i < out.length - 1; i++)
-		{
-			out[i] = alout.get(i);
+		Iterator<Hex> iter = alout.iterator();
+		while(iter.hasNext()) {
+			out[iterlength] = alout.get(iterlength);
+			iterlength++;
 		}
+		
 		return out;
 	}
 
@@ -351,19 +363,34 @@ public class World
 	{
 		Hex[] tohighlight = validSoldierHexs(player, workerlevel);
 		// System.out.println(tohighlight.length);
-		for (int i = 0; i < tohighlight.length - 1; i++)
+		for (int i = 0; i < tohighlight.length; i++)
 		{
-			if (tohighlight[i] != null)
-				tohighlight[i].isHighlighted = true;
+			tohighlight[i].isHighlighted = true;
 		}
 	}
 
-	public void placeItem(Hex placeHex, Item item, int playerturn)
+	public boolean placeItem(Hex placeHex, Item item, int playerturn)
 	{
-		System.out.println("placing " + item.toString() + " at x:" + placeHex.x + " y:" + placeHex.y);
-
-		placeHex.setItem(item);
-		placeHex.setStatus(playerturn + predefinedstatuses);
+		// finds valid Hexs based on item type,
+		// returns true if places successfully and false if not
+		Hex[] validHexs = getSpecificHexs(playerturn + predefinedstatuses);
+		
+		if(item.getItemtype().equals("soldier"))
+			validHexs = validSoldierHexs(playerturn, 0);
+		
+		// checks if placeHex is a valid Hex
+		for(int i = 0; i < validHexs.length; i++) {
+			if(validHexs[i].x == placeHex.x && validHexs[i].y == placeHex.y) {
+				placeHex.setItem(item);
+				placeHex.setStatus(playerturn + predefinedstatuses);
+				
+				System.out.println("placing " + item.toString() + " at x:" + placeHex.x + " y:" + placeHex.y);
+				return true;
+			}
+		}
+		
+		System.out.println("unable to place: " + item.toString() + " at x:" + placeHex.x + " y:" + placeHex.y);
+		return false;
 
 	}
 
@@ -512,121 +539,4 @@ public class World
 	{
 		return world;
 	}
-}
-
-class Hex
-{
-
-	// Hex Status:
-	// 0 = Nothing / Sea
-	// 1 = Unclaimed
-	// 2 = Player 1 Owned (red)
-	// 3 = Player 2 Owned (blue)
-
-	// Hex Occupation:
-	// soldier0 = worker
-	// soldier1 = brawler
-	// soldier2 = warrior
-	// soldier3 = knight
-	// tower0 = weak tower
-	// tower1 = strong tower
-	// farm = farm
-	// townhall = team center
-
-	private int status;
-	private Item item = new Item("");
-	public boolean cleaned = false;
-	private Hex cleanedBy;
-	public int x, y;
-	public boolean isHighlighted = false;
-
-	public Hex(int status, int x, int y)
-	{
-		this.status = status;
-		this.x = x;
-		this.y = y;
-	}
-
-	public int getStatus()
-	{
-		return status;
-	}
-
-	public boolean getCleaned()
-	{
-		return cleaned;
-	}
-
-	public Hex getCleanedBy()
-	{
-		return cleanedBy;
-	}
-
-	public void setClean(boolean newCleaned)
-	{
-		cleaned = newCleaned;
-	}
-
-	public void setCleanedBy(Hex cleaner)
-	{
-		cleanedBy = cleaner;
-	}
-
-	public Color getColor()
-	{
-		if (status == 0)
-		{
-			return Color.blue;
-		}
-		if (status == 1)
-		{
-			return Color.lightGray;
-		}
-		if (status == 2)
-		{
-			return PlayerTurn.teamColors[0];
-		}
-		if (status == 3)
-		{
-			return PlayerTurn.teamColors[1];
-		}
-		if (status == 4)
-		{
-			return PlayerTurn.teamColors[2];
-		}
-		if (status == 5)
-		{
-			return PlayerTurn.teamColors[3];
-		}
-		return null;
-	}
-
-	public void setItem(Item newItem)
-	{
-		item = newItem;
-	}
-
-	public Item getItem()
-	{
-		return item;
-	}
-
-	public void setStatus(int newStatus)
-	{
-		this.status = newStatus;
-	}
-
-	public Polygon getPolygon(double x, double y, double rad)
-	{
-		Polygon polygon = new Polygon();
-		for (int i = 0; i < 6; i++)
-		{
-			int xval = (int) (x + rad * Math.cos(i * 2 * Math.PI / 6D));
-			int yval = (int) (y + rad * Math.sin(i * 2 * Math.PI / 6D));
-			polygon.addPoint(xval, yval);
-		}
-		// g.drawPolygon(polygon);
-		return polygon;
-	}
-
 }
