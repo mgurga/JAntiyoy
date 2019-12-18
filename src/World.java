@@ -1,12 +1,7 @@
-import java.awt.Color;
-import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 public class World
 {
@@ -234,7 +229,8 @@ public class World
 			{
 				cleanupWorld(x, y + 1, iter + 1);// down left
 				world[y + 1][x].setCleanedBy(world[y][x]);
-			} else if (world[y + 1][x - 1].getStatus() != 0 && !world[y + 1][x - 1].getCleaned() && y % 2 == 1)
+			}
+			else if (world[y + 1][x - 1].getStatus() != 0 && !world[y + 1][x - 1].getCleaned() && y % 2 == 1)
 			{
 				cleanupWorld(x - 1, y + 1, iter + 1);// down left
 				world[y + 1][x - 1].setCleanedBy(world[y][x]);
@@ -243,7 +239,8 @@ public class World
 			{
 				cleanupWorld(x, y - 1, iter + 1);// up left
 				world[y - 1][x].setCleanedBy(world[y][x]);
-			} else if (world[y - 1][x - 1].getStatus() != 0 && !world[y - 1][x - 1].getCleaned() && y % 2 == 1)
+			}
+			else if (world[y - 1][x - 1].getStatus() != 0 && !world[y - 1][x - 1].getCleaned() && y % 2 == 1)
 			{
 				cleanupWorld(x - 1, y - 1, iter + 1);// up left
 				world[y - 1][x - 1].setCleanedBy(world[y][x]);
@@ -257,7 +254,8 @@ public class World
 			{
 				cleanupWorld(x + 1, y + 1, iter + 1);// down right
 				world[y + 1][x + 1].setCleanedBy(world[y][x]);
-			} else if (world[y + 1][x].getStatus() != 0 && !world[y + 1][x].getCleaned() && y % 2 == 1)
+			}
+			else if (world[y + 1][x].getStatus() != 0 && !world[y + 1][x].getCleaned() && y % 2 == 1)
 			{
 				cleanupWorld(x, y + 1, iter + 1);// down right
 				world[y + 1][x].setCleanedBy(world[y][x]);
@@ -271,12 +269,14 @@ public class World
 			{
 				cleanupWorld(x + 1, y - 1, iter + 1);// up right
 				world[y - 1][x + 1].setCleanedBy(world[y][x]);
-			} else if (world[y - 1][x].getStatus() != 0 && !world[y - 1][x].getCleaned() && y % 2 == 1)
+			}
+			else if (world[y - 1][x].getStatus() != 0 && !world[y - 1][x].getCleaned() && y % 2 == 1)
 			{
 				cleanupWorld(x, y - 1, iter + 1);// up right
 				world[y - 1][x].setCleanedBy(world[y][x]);
 			}
-		} else
+		}
+		else
 		{
 			finishedCleaning--;
 		}
@@ -330,32 +330,31 @@ public class World
 		// adds all to an arraylist then converets it to Hex[]
 		ArrayList<Hex> alout = new ArrayList<Hex>();
 		Hex[] teamHexs = getSpecificHexs(player + predefinedstatuses);
-		int iterlength = 0;
 		for (int i = 0; i < teamHexs.length; i++)
 		{
-			if(teamHexs[i].getStatus() != 0 && teamHexs[i] != null) {
+			if (teamHexs[i].getStatus() != 0 && teamHexs[i] != null)
+			{
 				alout.add(teamHexs[i]);
 			}
-			
+
 			Hex[] adjs = getAdjHexs(teamHexs[i]);
-			
+
 			for (int j = 0; j < adjs.length; j++)
 			{
-				if(adjs[j].getStatus() != 0 && adjs[j] != null) {
+				if (adjs[j].getStatus() != 0 && adjs[j] != null)
+				{
 					alout.add(adjs[j]);
 				}
 			}
 		}
-		
+
 		// converting to Hex[]
-		
 		Hex[] out = new Hex[alout.size()];
-		Iterator<Hex> iter = alout.iterator();
-		while(iter.hasNext()) {
-			out[iterlength] = alout.get(iterlength);
-			iterlength++;
+		for (int i = 0; i < alout.size(); i++)
+		{
+			out[i] = alout.get(i);
 		}
-		
+
 		return out;
 	}
 
@@ -374,21 +373,23 @@ public class World
 		// finds valid Hexs based on item type,
 		// returns true if places successfully and false if not
 		Hex[] validHexs = getSpecificHexs(playerturn + predefinedstatuses);
-		
-		if(item.getItemtype().equals("soldier"))
+
+		if (item.getItemtype().equals("soldier"))
 			validHexs = validSoldierHexs(playerturn, 0);
-		
+
 		// checks if placeHex is a valid Hex
-		for(int i = 0; i < validHexs.length; i++) {
-			if(validHexs[i].x == placeHex.x && validHexs[i].y == placeHex.y) {
+		for (int i = 0; i < validHexs.length; i++)
+		{
+			if (validHexs[i].x == placeHex.x && validHexs[i].y == placeHex.y)
+			{
 				placeHex.setItem(item);
 				placeHex.setStatus(playerturn + predefinedstatuses);
-				
+
 				System.out.println("placing " + item.toString() + " at x:" + placeHex.x + " y:" + placeHex.y);
 				return true;
 			}
 		}
-		
+
 		System.out.println("unable to place: " + item.toString() + " at x:" + placeHex.x + " y:" + placeHex.y);
 		return false;
 
@@ -452,7 +453,8 @@ public class World
 					out[1] = world[y - 1][x]; // up left
 				if (!(world[y - 1][x + 1] == null))
 					out[5] = world[y - 1][x + 1]; // up right
-			} else if (y % 2 == 1)
+			}
+			else if (y % 2 == 1)
 			{
 				if (!(world[y + 1][x - 1] == null))
 					out[0] = world[y + 1][x - 1]; // down left

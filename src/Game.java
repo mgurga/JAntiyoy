@@ -27,6 +27,7 @@ public class Game extends Canvas implements Runnable
 		thread = new Thread(this);
 		thread.start();
 		running = true;
+		// jagame.init();
 	}
 
 	public synchronized void stop()
@@ -35,7 +36,8 @@ public class Game extends Canvas implements Runnable
 		{
 			thread.join();
 			running = false;
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -71,7 +73,6 @@ public class Game extends Canvas implements Runnable
 			if (System.currentTimeMillis() - timer > 100)
 			{
 				timer += 500;
-				jagame.seconds++;
 				window.getFrame().setTitle("JAntiyoy FPS: " + frames);
 				// System.out.println("FPS: " + frames);
 				frames = 0;
@@ -100,7 +101,8 @@ public class Game extends Canvas implements Runnable
 		try
 		{
 			jagame.tick(g);
-		} catch (NullPointerException e)
+		}
+		catch (NullPointerException e)
 		{
 			e.printStackTrace();
 		}

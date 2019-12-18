@@ -69,27 +69,35 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		pt = new PlayerTurn(world, worldGen);
 
 		// loads all the images
-		building[0] = new ImageIcon("res/buildings/farm0.png").getImage();
-		building[1] = new ImageIcon("res/buildings/farm1.png").getImage();
-		building[2] = new ImageIcon("res/buildings/farm2.png").getImage();
-		building[3] = new ImageIcon("res/buildings/townhall.png").getImage();
 
-		soldiers[0] = new ImageIcon("res/soldiers/soldier0.png").getImage();
-		soldiers[1] = new ImageIcon("res/soldiers/soldier1.png").getImage();
-		soldiers[2] = new ImageIcon("res/soldiers/soldier2.png").getImage();
-		soldiers[3] = new ImageIcon("res/soldiers/soldier3.png").getImage();
+	}
 
-		towers[0] = new ImageIcon("res/towers/tower0.png").getImage();
-		towers[1] = new ImageIcon("res/towers/tower1.png").getImage();
+	public void init()
+	{
+		building[0] = new ImageIcon(Game.class.getResource("buildings/farm0.png")).getImage();
+		building[1] = new ImageIcon(Game.class.getResource("buildings/farm1.png")).getImage();
+		building[2] = new ImageIcon(Game.class.getResource("buildings/farm2.png")).getImage();
+		building[3] = new ImageIcon(Game.class.getResource("buildings/townhall.png")).getImage();
 
-		menuicons[0] = new ImageIcon("res/menuicons/undo.png").getImage();
-		menuicons[1] = new ImageIcon("res/menuicons/end_turn.png").getImage();
+		soldiers[0] = new ImageIcon(Game.class.getResource("soldiers/soldier0.png")).getImage();
+		soldiers[1] = new ImageIcon(Game.class.getResource("soldiers/soldier1.png")).getImage();
+		soldiers[2] = new ImageIcon(Game.class.getResource("soldiers/soldier2.png")).getImage();
+		soldiers[3] = new ImageIcon(Game.class.getResource("soldiers/soldier3.png")).getImage();
 
+		towers[0] = new ImageIcon(Game.class.getResource("towers/tower0.png")).getImage();
+		towers[1] = new ImageIcon(Game.class.getResource("towers/tower1.png")).getImage();
+
+		menuicons[0] = new ImageIcon(Game.class.getResource("menuicons/undo.png")).getImage();
+		menuicons[1] = new ImageIcon(Game.class.getResource("menuicons/end_turn.png")).getImage();
 	}
 
 	// draw loop
 	public void tick(Graphics g)
 	{
+		if (frame == 0)
+		{
+			init();
+		}
 
 		graphics = g;
 		drawBackground(g, Color.blue);
@@ -156,7 +164,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 			g2.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
 			g2.setColor(Color.black);
 			g2.drawString("$" + pt.getCurrentPlayerMoney(),
-					WIDTH - (g2.getFontMetrics().stringWidth("$" + pt.getCurrentPlayerMoney()) + 16),
+					WIDTH - (("$" + pt.getCurrentPlayerMoney()).length() * g2.getFont().getSize()),
 					g2.getFontMetrics().getHeight());
 			g2.drawString("+" + pt.getCurrentPlayerEarnings(),
 					WIDTH - ("+" + pt.getCurrentPlayerEarnings()).length() * g2.getFont().getSize(),

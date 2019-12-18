@@ -78,8 +78,9 @@ public class PlayerTurn
 	{
 		return teamMoney[currentturn];
 	}
-	
-	public void setCurrentPlayerMoney(int newMoney) {
+
+	public void setCurrentPlayerMoney(int newMoney)
+	{
 		teamMoney[currentturn] = newMoney;
 	}
 }
