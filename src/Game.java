@@ -55,10 +55,14 @@ public class Game extends Canvas implements Runnable {
 				tick();
 				delta--;
 			}
-			if (running)
+			if (running) {
+				// runs every frame
 				render();
+				frames++;
+			}
 
 			if (System.currentTimeMillis() - timer > 100) {
+				// this runs very 1 second
 				timer += 500;
 				window.getFrame().setTitle("JAntiyoy FPS: " + frames);
 				// System.out.println("FPS: " + frames);
