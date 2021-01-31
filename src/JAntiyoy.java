@@ -75,7 +75,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 	}
 
 	public void init() {
-		
+
 	}
 
 	// draw loop
@@ -83,8 +83,8 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		if (frame == 0) {
 			init();
 		}
-		
-		if(frame % 100 == 0) {
+
+		if (frame % 100 == 0) {
 			seconds++;
 		}
 
@@ -181,8 +181,8 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 				g2.setFont(oldFont);
 			}
 		}
-		
-		if(!helditem.isEmpty()) {
+
+		if (!helditem.isEmpty()) {
 			g2.drawImage(helditem.getImage(), mousex, mousey, toolbarSize, toolbarSize, null);
 		}
 	}
@@ -218,12 +218,14 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 
 					g2.drawPolygon(hex);
 					// System.out.println(world[i][j].getItem().toString());
-					if(world[i][j].getItem().isReady && world[i][j].getStatus() == pt.currentturn + worldGen.predefinedstatuses) {
-						//draw item bouncing if ready
-						g2.drawImage(world[i][j].getItem().getImage(), (int) (drawx - radius), (int) ((drawy - radius) + (Math.sin(seconds) * 5) - 10),
-								(int) imgsize, (int) imgsize, null);
+					if (world[i][j].getItem().isReady
+							&& world[i][j].getStatus() == pt.currentturn + worldGen.predefinedstatuses) {
+						// draw item bouncing if ready
+						g2.drawImage(world[i][j].getItem().getImage(), (int) (drawx - radius),
+								(int) ((drawy - radius) + (Math.sin(seconds) * 5) - 10), (int) imgsize, (int) imgsize,
+								null);
 					} else {
-						//draw item with no bounce
+						// draw item with no bounce
 						g2.drawImage(world[i][j].getItem().getImage(), (int) (drawx - radius), (int) (drawy - radius),
 								(int) imgsize, (int) imgsize, null);
 					}
@@ -312,37 +314,38 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 						}
 					}
 				}
-				
+
 				Item clickeditem = worldGen.getWorld()[hexx][hexy].getItem();
 				Hex clickedhex = worldGen.getWorld()[hexx][hexy];
-				
+
 				System.out.println(clickedhex.getStatus());
 				System.out.println(pt.currentturn);
-				
+
 				if (!selecteditem.isEmpty()) {
 					// run if selecteditem is nothing/""
 					selecteditem.isReady = true;
 					if (worldGen.placeItem(world[hexx][hexy], selecteditem, pt.currentturn)) {
 						pt.setCurrentPlayerMoney(pt.getCurrentPlayerMoney() - selecteditem.getPrice());
 					}
-					
+
 					selecteditem = new Item();
-					
-				} else if(helditem.isEmpty() && clickeditem.isReady && 
-						(clickedhex.getStatus() == pt.currentturn + worldGen.predefinedstatuses)) {
-					// picks up item if it is ready and the hex it is on is owned by the current player
+
+				} else if (helditem.isEmpty() && clickeditem.isReady
+						&& (clickedhex.getStatus() == pt.currentturn + worldGen.predefinedstatuses)) {
+					// picks up item if it is ready and the hex it is on is owned by the current
+					// player
 					System.out.println("grabbing: '" + clickeditem.toString() + "'");
 					helditem = clickeditem;
 					worldGen.placeItem(world[hexx][hexy], new Item(), pt.currentturn);
-					
-				} else if(!helditem.isEmpty()) {
-					//System.out.println("placing: '" + helditem.toString() + "'");
+
+				} else if (!helditem.isEmpty()) {
+					// System.out.println("placing: '" + helditem.toString() + "'");
 					// places helditem
 					helditem.isReady = false;
 					worldGen.placeItem(world[hexx][hexy], helditem, pt.currentturn);
 					helditem = new Item();
 					worldGen.unhighlightAll();
-					
+
 				}
 
 //				Hex[] adjs = worldGen.getAdjHexs(new Hex(1, hexy, hexx));

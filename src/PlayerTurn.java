@@ -30,8 +30,8 @@ public class PlayerTurn {
 			currentturn = 0;
 		}
 		Hex[] setReady = worldGen.getSpecificHexs(currentturn + worldGen.predefinedstatuses);
-		for(int i = 0; i < setReady.length; i++) {
-			if(setReady[i].getItem().getItemtype().equals("soldier")) {
+		for (int i = 0; i < setReady.length; i++) {
+			if (setReady[i].getItem().getItemtype().equals("soldier")) {
 				setReady[i].getItem().isReady = true;
 			}
 		}

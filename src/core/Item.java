@@ -28,19 +28,19 @@ public class Item implements Comparable<Item> {
 	}
 
 	public String toString() {
-		if(itemtype.equals("")) {
+		if (itemtype.equals("")) {
 			return "";
 		}
 		return itemtype + itemlevel;
 	}
-	
+
 	public boolean isEmpty() {
-		if(itemtype.equals("")) {
+		if (itemtype.equals("")) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	public String getItemtype() {
 		return itemtype;
 	}
