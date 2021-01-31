@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="JAntiyoy">
+	<property environment="env" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.8" />
+	<property name="source" value="1.8" />
+	<property name="main-class" value="Game" />
+	<path id="JAntiyoy.classpath">
+		<pathelement location="bin" />
+	</path>
+	<path id="run.Game.classpath">
+		<path refid="JAntiyoy.classpath" />
+	</path>
+	<target name="init">
+		<mkdir dir="bin" />
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="res">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="clean">
+		<delete dir="bin" />
+	</target>
+	<target depends="clean" name="cleanall" />
+	<target depends="init" name="build">
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+			<src path="src" />
+			<src path="res" />
+			<classpath refid="JAntiyoy.classpath" />
+		</javac>
+	</target>
+	<target name="buildjar" depends="build">
+		<jar destfile="${basedir}/bin/JAntiyoy.jar" basedir="${basedir}/bin">
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}" />
+			</manifest>
+		</jar>
+	</target>
+	<target name="runjar" depends="buildjar">
+		<java jar="${basedir}/bin/JAntiyoy.jar" fork="true" />
+	</target>
+</project>
