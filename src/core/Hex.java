@@ -1,7 +1,10 @@
+package core;
+
+
 import java.awt.Color;
 import java.awt.Polygon;
 
-class Hex implements Comparable<Hex> {
+public class Hex implements Comparable<Hex> {
 
 	// Hex Status:
 	// 0 = Nothing / Sea
@@ -63,16 +66,16 @@ class Hex implements Comparable<Hex> {
 			return Color.lightGray;
 		}
 		if (status == 2) {
-			return PlayerTurn.teamColors[0];
+			return Assets.teamColors[0];
 		}
 		if (status == 3) {
-			return PlayerTurn.teamColors[1];
+			return Assets.teamColors[1];
 		}
 		if (status == 4) {
-			return PlayerTurn.teamColors[2];
+			return Assets.teamColors[2];
 		}
 		if (status == 5) {
-			return PlayerTurn.teamColors[3];
+			return Assets.teamColors[3];
 		}
 		return null;
 	}

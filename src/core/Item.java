@@ -1,3 +1,5 @@
+package core;
+
 import java.awt.Image;
 
 public class Item implements Comparable<Item> {
@@ -6,7 +8,7 @@ public class Item implements Comparable<Item> {
 	// this is a replacement for string based changes, but still
 	// supports these legacy changes if needed
 
-	public boolean isReady = false;
+	public boolean isReady = false; // whether an item is ready to be used
 	private String itemtype = ""; // could be 'tower', 'farm', 'soldier', 'townhall'
 	private int itemlevel = 0; // 0-3
 
@@ -51,15 +53,15 @@ public class Item implements Comparable<Item> {
 		// price based on values from PlayerTurn.java
 
 		if (itemtype.equals("soldier")) {
-			return PlayerTurn.itemPrice[itemlevel];
+			return Assets.itemPrice[itemlevel];
 		}
 
 		if (itemtype.equals("tower")) {
-			return PlayerTurn.itemPrice[itemlevel + 4];
+			return Assets.itemPrice[itemlevel + 4];
 		}
 
 		if (itemtype.equals("farm"))
-			return PlayerTurn.itemPrice[6];
+			return Assets.itemPrice[6];
 
 		return -1;
 	}
@@ -68,16 +70,16 @@ public class Item implements Comparable<Item> {
 		// images defined in JAntiyoy
 
 		if (itemtype.equals("soldier"))
-			return JAntiyoy.soldiers[itemlevel];
+			return Assets.soldiers[itemlevel];
 
 		if (itemtype.equals("tower"))
-			return JAntiyoy.towers[itemlevel];
+			return Assets.towers[itemlevel];
 
 		if (itemtype.equals("farm"))
-			return JAntiyoy.building[0];
+			return Assets.building[0];
 
 		if (itemtype.equals("townhall"))
-			return JAntiyoy.building[3];
+			return Assets.building[3];
 
 		return null;
 	}

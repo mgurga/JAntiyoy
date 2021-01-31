@@ -1,4 +1,9 @@
+
 import java.awt.Color;
+
+import core.Hex;
+import world.World;
+import core.Assets;
 
 public class PlayerTurn {
 
@@ -8,16 +13,6 @@ public class PlayerTurn {
 
 	public Hex[][] world;
 	public World worldGen;
-	public final static Color[] teamColors = { Color.pink, Color.cyan, Color.yellow, Color.green };
-	public final static int[] itemPrice = { 
-			10, // soldier0
-			20, // soldier1
-			30, // soldier2
-			40, // soldier3
-			15, // tower0
-			35, // tower1
-			12, // farm + amount of already placed farms
-	};
 	public int[] teamMoney = { 10, 10, 10, 10, 10, 10, 10, 10 };
 	public int currentturn = 0;
 	public int totalplayers = 2;
@@ -44,27 +39,27 @@ public class PlayerTurn {
 
 	public int getPriceOfItemName(String itemName) {
 		if (itemName == "soldier0")
-			return itemPrice[0];
+			return Assets.itemPrice[0];
 		if (itemName == "soldier1")
-			return itemPrice[1];
+			return Assets.itemPrice[1];
 		if (itemName == "soldier2")
-			return itemPrice[2];
+			return Assets.itemPrice[2];
 		if (itemName == "soldier3")
-			return itemPrice[3];
+			return Assets.itemPrice[3];
 
 		if (itemName == "tower0")
-			return itemPrice[4];
+			return Assets.itemPrice[4];
 		if (itemName == "tower1")
-			return itemPrice[5];
+			return Assets.itemPrice[5];
 
 		if (itemName == "farm")
-			return itemPrice[6];
+			return Assets.itemPrice[6];
 
 		return -1;
 	}
 
 	public void undo() {
-
+		// TODO: write undo
 	}
 
 	public int getCurrentPlayerEarnings() {

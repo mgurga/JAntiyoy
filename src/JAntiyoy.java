@@ -8,6 +8,12 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+
+import core.Hex;
+import core.Item;
+import world.World;
+import core.Assets;
+
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
@@ -35,14 +41,11 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 	public int selectedhexx, selectedhexy;
 	public PlayerTurn pt; // used to show end turn
 	public boolean blink = false; // tells if hexs are highlighted
-	public static Image[] building = new Image[4]; // farms and townhall
-	public static Image[] soldiers = new Image[4]; // soldiers
-	public static Image[] towers = new Image[2]; // towers
-	public static Image[] menuicons = new Image[2]; // undo and endturn
 	private String toolbarSide = "left"; // soon to be options
 	private int toolbarSize = 50; // ability to resize sidebars
 	public Item selecteditem = new Item(""); // currently selected item
 	public Item helditem = new Item("");
+	public boolean highlightplayerhexsinrest = false;
 
 	public JAntiyoy(int w, int h, JFrame frame) {
 		// init
@@ -72,21 +75,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 	}
 
 	public void init() {
-		building[0] = new ImageIcon(Game.class.getResource("buildings/farm0.png")).getImage();
-		building[1] = new ImageIcon(Game.class.getResource("buildings/farm1.png")).getImage();
-		building[2] = new ImageIcon(Game.class.getResource("buildings/farm2.png")).getImage();
-		building[3] = new ImageIcon(Game.class.getResource("buildings/townhall.png")).getImage();
-
-		soldiers[0] = new ImageIcon(Game.class.getResource("soldiers/soldier0.png")).getImage();
-		soldiers[1] = new ImageIcon(Game.class.getResource("soldiers/soldier1.png")).getImage();
-		soldiers[2] = new ImageIcon(Game.class.getResource("soldiers/soldier2.png")).getImage();
-		soldiers[3] = new ImageIcon(Game.class.getResource("soldiers/soldier3.png")).getImage();
-
-		towers[0] = new ImageIcon(Game.class.getResource("towers/tower0.png")).getImage();
-		towers[1] = new ImageIcon(Game.class.getResource("towers/tower1.png")).getImage();
-
-		menuicons[0] = new ImageIcon(Game.class.getResource("menuicons/undo.png")).getImage();
-		menuicons[1] = new ImageIcon(Game.class.getResource("menuicons/end_turn.png")).getImage();
+		
 	}
 
 	// draw loop
@@ -124,13 +113,13 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 			worldGen.highlightPlayerHexs(pt.currentturn);
 		}
 
-		if (selecteditem.toString().equals("soldier0"))
+		if (selecteditem.toString().equals("soldier0") || helditem.toString().equals("soldier0"))
 			worldGen.highlightValidSoldierHexs(pt.currentturn, 0);
-		if (selecteditem.toString().equals("soldier1"))
+		if (selecteditem.toString().equals("soldier1") || helditem.toString().equals("soldier1"))
 			worldGen.highlightValidSoldierHexs(pt.currentturn, 1);
-		if (selecteditem.toString().equals("soldier2"))
+		if (selecteditem.toString().equals("soldier2") || helditem.toString().equals("soldier2"))
 			worldGen.highlightValidSoldierHexs(pt.currentturn, 2);
-		if (selecteditem.toString().equals("soldier3"))
+		if (selecteditem.toString().equals("soldier3") || helditem.toString().equals("soldier3"))
 			worldGen.highlightValidSoldierHexs(pt.currentturn, 3);
 
 		// highlights player team hexs
@@ -144,7 +133,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 
 		if (toolbarSide == "left") {
 			// draw background
-			g2.setColor(PlayerTurn.teamColors[pt.currentturn]);
+			g2.setColor(Assets.teamColors[pt.currentturn]);
 			g2.fillRect(0, 0, toolbarSize, HEIGHT);
 
 			// draw line
@@ -166,21 +155,21 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 
 			// draw soldier, farm, and tower icons
 			// soldiers
-			g2.drawImage(soldiers[0], 0, 0, toolbarSize, toolbarSize, null);
-			g2.drawImage(soldiers[1], 0, toolbarSize, toolbarSize, toolbarSize, null);
-			g2.drawImage(soldiers[2], 0, toolbarSize * 2, toolbarSize, toolbarSize, null);
-			g2.drawImage(soldiers[3], 0, toolbarSize * 3, toolbarSize, toolbarSize, null);
+			g2.drawImage(Assets.soldiers[0], 0, 0, toolbarSize, toolbarSize, null);
+			g2.drawImage(Assets.soldiers[1], 0, toolbarSize, toolbarSize, toolbarSize, null);
+			g2.drawImage(Assets.soldiers[2], 0, toolbarSize * 2, toolbarSize, toolbarSize, null);
+			g2.drawImage(Assets.soldiers[3], 0, toolbarSize * 3, toolbarSize, toolbarSize, null);
 
 			// towers
-			g2.drawImage(towers[0], 0, toolbarSize * 5, toolbarSize, toolbarSize, null);
-			g2.drawImage(towers[1], 0, toolbarSize * 6, toolbarSize, toolbarSize, null);
+			g2.drawImage(Assets.towers[0], 0, toolbarSize * 5, toolbarSize, toolbarSize, null);
+			g2.drawImage(Assets.towers[1], 0, toolbarSize * 6, toolbarSize, toolbarSize, null);
 
 			// farm
-			g2.drawImage(building[0], 0, toolbarSize * 7, toolbarSize, toolbarSize, null);
+			g2.drawImage(Assets.building[0], 0, toolbarSize * 7, toolbarSize, toolbarSize, null);
 
 			// menu icons
-			g2.drawImage(menuicons[1], 0, HEIGHT - toolbarSize * 2, toolbarSize, toolbarSize, null);
-			g2.drawImage(menuicons[0], 0, HEIGHT - toolbarSize * 3, toolbarSize, toolbarSize, null);
+			g2.drawImage(Assets.menuicons[1], 0, HEIGHT - toolbarSize * 2, toolbarSize, toolbarSize, null);
+			g2.drawImage(Assets.menuicons[0], 0, HEIGHT - toolbarSize * 3, toolbarSize, toolbarSize, null);
 
 			// show item pic and price
 			if (!selecteditem.getItemtype().equals("")) {
@@ -229,7 +218,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 
 					g2.drawPolygon(hex);
 					// System.out.println(world[i][j].getItem().toString());
-					if(world[i][j].getItem().isReady) {
+					if(world[i][j].getItem().isReady && world[i][j].getStatus() == pt.currentturn + worldGen.predefinedstatuses) {
 						//draw item bouncing if ready
 						g2.drawImage(world[i][j].getItem().getImage(), (int) (drawx - radius), (int) ((drawy - radius) + (Math.sin(seconds) * 5) - 10),
 								(int) imgsize, (int) imgsize, null);
@@ -254,6 +243,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 		}
 
 		// whole thing ran again to highlight highlighted hexs based on world variable
+		// TODO: optimize, only draw what needs to be drawn. make O(1)
 		for (int i = 0; i < world.length; i++) {
 			for (int j = 0; j < world[0].length; j++) {
 				double hexoffset = 0 * zoomoffset;
@@ -322,8 +312,13 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 						}
 					}
 				}
+				
 				Item clickeditem = worldGen.getWorld()[hexx][hexy].getItem();
-
+				Hex clickedhex = worldGen.getWorld()[hexx][hexy];
+				
+				System.out.println(clickedhex.getStatus());
+				System.out.println(pt.currentturn);
+				
 				if (!selecteditem.isEmpty()) {
 					// run if selecteditem is nothing/""
 					selecteditem.isReady = true;
@@ -332,16 +327,21 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
 					}
 					
 					selecteditem = new Item();
-				} else if(helditem.isEmpty() && clickeditem.isReady) {
+					
+				} else if(helditem.isEmpty() && clickeditem.isReady && 
+						(clickedhex.getStatus() == pt.currentturn + worldGen.predefinedstatuses)) {
+					// picks up item if it is ready and the hex it is on is owned by the current player
 					System.out.println("grabbing: '" + clickeditem.toString() + "'");
 					helditem = clickeditem;
 					worldGen.placeItem(world[hexx][hexy], new Item(), pt.currentturn);
 					
 				} else if(!helditem.isEmpty()) {
 					//System.out.println("placing: '" + helditem.toString() + "'");
+					// places helditem
 					helditem.isReady = false;
 					worldGen.placeItem(world[hexx][hexy], helditem, pt.currentturn);
 					helditem = new Item();
+					worldGen.unhighlightAll();
 					
 				}
 

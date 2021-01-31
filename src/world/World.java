@@ -1,7 +1,13 @@
+package world;
+
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+
+import core.Hex;
+import core.Item;
 
 public class World {
 	public Hex[][] world;
@@ -9,7 +15,6 @@ public class World {
 	public int worldSize;
 	public int finishedCleaning = 0;
 	Random rand = new Random();
-	public PlayerTurn pt;
 	public int predefinedstatuses = 2;
 
 	public World(int size) {
@@ -31,8 +36,6 @@ public class World {
 			cleanWorld = new Hex[50][25];
 			worldSize = 2;
 		}
-
-		pt = new PlayerTurn(world, this);
 	}
 
 	public void generateWorld() {
@@ -160,8 +163,15 @@ public class World {
 		}
 	}
 
-	public void highlightValidHexsForItem() {
-
+	public void highlightValidHexsForItem(int playerNum) {
+		for (int i = 0; i < world.length; i++) {
+			for (int j = 0; j < world[0].length; j++) {
+				if (world[i][j].getStatus() == playerNum + predefinedstatuses) {
+					world[i][j].isHighlighted = true;
+					
+				}
+			}
+		}
 	}
 
 	public void unhighlightAll() {
