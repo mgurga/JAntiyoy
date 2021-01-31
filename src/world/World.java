@@ -1,6 +1,5 @@
 package world;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -168,7 +167,7 @@ public class World {
 			for (int j = 0; j < world[0].length; j++) {
 				if (world[i][j].getStatus() == playerNum + predefinedstatuses) {
 					world[i][j].isHighlighted = true;
-					
+
 				}
 			}
 		}
