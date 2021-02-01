@@ -46,4 +46,5 @@
 	<target name="runjar" depends="buildjar">
 		<java jar="${basedir}/bin/JAntiyoy.jar" fork="true" />
 	</target>
+	<target name="cleanrunjar" depends="clean,runjar"/>
 </project>
