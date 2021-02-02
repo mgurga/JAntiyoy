@@ -1,5 +1,6 @@
 # JAntiyoy
 Hexagonal turn-based strategy game based on game made by Yoitro: https://github.com/yiotro/Antiyoy
+![JAntiyoy screenshot](https://github.com/mgurga/JAntiyoy/blob/master/docs/screenshot1.png)
 
 ## Description:
 A Simple game where you pay for soldiers and try and take over the small island. 
