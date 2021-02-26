@@ -1,6 +1,4 @@
 
-import java.awt.Color;
-
 import core.Hex;
 import world.World;
 import core.Assets;
@@ -33,6 +31,7 @@ public class PlayerTurn {
         for (int i = 0; i < setReady.length; i++) {
             if (setReady[i].getItem().getItemtype().equals("soldier")) {
                 setReady[i].getItem().isReady = true;
+                System.out.println(setReady[i].getItem().getItemtype());
             }
         }
     }

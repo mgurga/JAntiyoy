@@ -89,7 +89,9 @@ public class Game extends Canvas implements Runnable {
         try {
             jagame.tick(g);
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            // jagame is null for a few frames for some reason
+            // TODO wait for jagame to no be null???
+            // e.printStackTrace();
         }
 
         g.dispose();
