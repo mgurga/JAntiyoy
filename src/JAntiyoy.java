@@ -3,10 +3,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import core.Hex;
@@ -245,7 +243,7 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
         }
 
         // whole thing ran again to highlight highlighted hexs based on world variable
-        // TODO: optimize, only draw what needs to be drawn. make O(1)
+        // TODO optimize, only draw what needs to be drawn. make O(1)
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[0].length; j++) {
                 double hexoffset = 0 * zoomoffset;
@@ -318,12 +316,15 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
                 Item clickeditem = worldGen.getWorld()[hexx][hexy].getItem();
                 Hex clickedhex = worldGen.getWorld()[hexx][hexy];
 
-                System.out.println(clickedhex.getStatus());
-                System.out.println(pt.currentturn);
-
                 if (!selecteditem.isEmpty()) {
-                    // run if selecteditem is nothing/""
-                    selecteditem.isReady = true;
+                    // run if user has selected item
+                    
+                    if (selecteditem.getItemtype().equals("soldier")) {
+                        selecteditem.isReady = true;
+                    } else {
+                        selecteditem.isReady = false;
+                    }
+                    
                     if (worldGen.placeItem(world[hexx][hexy], selecteditem, pt.currentturn)) {
                         pt.setCurrentPlayerMoney(pt.getCurrentPlayerMoney() - selecteditem.getPrice());
                     }
@@ -347,11 +348,6 @@ public class JAntiyoy implements MouseListener, MouseMotionListener, MouseWheelL
                     worldGen.unhighlightAll();
 
                 }
-
-//				Hex[] adjs = worldGen.getAdjHexs(new Hex(1, hexy, hexx));
-//				for(int i = 0; i < adjs.length; i++) {
-//					adjs[i].isHighlighted = true;
-//				}
 
             } else {
                 // clicked on menu
